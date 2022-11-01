@@ -1,6 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import VideoJS from "./components/VideoJS";
 import CameraPicker from "./components/CameraPicker";
+import VideoCard from "./components/VideoCard";
+import ChangeButton from "./components/ChangeButton";
 export default function App() {
   const playerRef = useRef(null);
 
@@ -74,7 +76,9 @@ export default function App() {
   ];
 
   const [camera, setCamera] = useState(cameras[0]);
+  const [cameraIndex, setCameraIndex] = useState(0);
   console.log(camera.id);
+  console.log(cameras.length);
   const options = {
     autoplay: false,
     controls: true,
@@ -97,6 +101,10 @@ export default function App() {
     adTagUrl:
       "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpreonly&ciu_szs=300x250%2C728x90&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&correlator=",
   };
+  
+  useEffect(()=> {
+    setCamera(cameras[cameraIndex])
+  }, [cameraIndex]);
 
   return (
     <>
@@ -107,11 +115,21 @@ export default function App() {
         onReady={handlePlayerReady}
         camera={camera}
       />
+      <ChangeButton onClick={cameraIndex > 0? () => setCameraIndex(cameraIndex-1):null}/>
+      {camera.id}
+      <ChangeButton onClick={cameraIndex < cameras.length - 1? () => setCameraIndex(cameraIndex+1):null}/>
+
+      <VideoCard 
+        image="https://www.fiba.basketball/images.fiba.com/Graphic/3/7/dQMGB5Cfdk6ovOjCGm8dtQ.jpg?v=2014120514385062"
+        title="view1"
+      />
+      
       <CameraPicker
         cameras={cameras}
-        setCamera={setCamera}
+        setCamera={setCameraIndex}
         currentCamera={camera}
       />
+      
     </>
   );
 }
